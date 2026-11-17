@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Pirata+One&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="top">
+            <h1>Cermin</h1>
+            <div class="stats"><span>Lantai <b id="fl"></b></span><span>Pantulan <b id="pa">0</b></span><span>Nyawa <b
+                        id="hp"></b></span><span>Bayangan <b id="sh"></b></span></div>
+        </div>
+        <canvas id="cv" width="650" height="450" aria-label="Peta rumah"></canvas>
+        <div id="msg" aria-live="polite"></div>
+        <div id="pw"></div>
+        <div class="row">
+            <div class="pad" aria-label="Kontrol arah">
+                <button class="u" data-d="0,-1" aria-label="Atas">▲</button>
+                <button class="l" data-d="-1,0" aria-label="Kiri">◀</button>
+                <button class="d" data-d="0,1" aria-label="Bawah">▼</button>
+                <button class="r" data-d="1,0" aria-label="Kanan">▶</button>
+            </div>
+            <div class="acts">
+                <button id="stare">Tatap cermin</button>
+                <!-- dbl = double langkah -->
+                <button id="dbl" hidden></button>
+                <!-- freeze bayangan -->
+                <button id="freeze" hidden></button>
+            </div>
+        </div>
+        <p class="hint">Keyboard: panah/WASD, Spasi untuk menatap, Shift untuk langkah ×2. Panah emas di tepi layar
+            menunjukkan arah pintu: makin dekat, makin akurat dan makin terang.</p>
+    </div>
+
+    <div class="ov" id="intro">
+        <div>
+            <h2>Cermin</h2>
+            <p>Rumah ini luas dan penuh cermin. Bayanganmu menapaki <b>jalur yang pernah kamu lewati</b>, tertinggal
+                beberapa
+                langkah. Tiap kali ia menembusmu, nyawamu berkurang satu (3 nyawa per lantai) dan bayangannya makin
+                tebal.<br><br>Cermin <span style="color:#b8924a">emas</span> membiarkanmu memilih kekuatan. Cermin <span
+                    style="color:#b07ad8">ungu</span> memutar gacha. Tiap tatapan menambah Pantulan: bayangan makin
+                jelas, makin
+                besar, dan makin dekat.<br><br>Kadang ada <b>kotak misterius</b> tersembunyi di rumah ini. Maksimal satu
+                per
+                putaran, itu pun kalau ada.<br><br><b id="lv"></b></p>
+            <button id="go">Masuk ke rumah</button>
+        </div>
+    </div>
+    <div class="ov" id="pick" hidden>
+        <div style="max-width:560px">
+            <h2>Pilih versi dirimu</h2>
+            <p>Pantulan naik 1 dan bayanganmu mendekat.</p>
+            <div class="cards">
+                <button class="card" data-p="long"
+                    aria-label="Langkah Panjang: melompat 2 kotak dan melewati jebakan, permanen"><img
+                        data-asset="kartu_langkah_panjang" alt="" onerror="this.parentNode.classList.add('noimg')"><span
+                        class="fb"><span class="ic">👣</span><b>Langkah Panjang</b><small>Melompat 2 kotak dan melewati
+                            jebakan.
+                            Permanen.</small></span></button>
+                <button class="card" data-p="see"
+                    aria-label="Mata Tembus: pintu dan semua jebakan lantai ini terlihat"><img
+                        data-asset="kartu_mata_tembus" alt="" onerror="this.parentNode.classList.add('noimg')"><span
+                        class="fb"><span class="ic">👁️</span><b>Mata Tembus</b><small>Pintu dan semua jebakan lantai
+                            ini
+                            terlihat.</small></span></button>
+                <button class="card" data-p="freeze"
+                    aria-label="Napas Beku: bayangan berhenti 5 langkah, sekali pakai"><img
+                        data-asset="kartu_napas_beku" alt="" onerror="this.parentNode.classList.add('noimg')"><span
+                        class="fb"><span class="ic">❄️</span><b>Napas Beku</b><small>Bayangan berhenti 5 langkah. Sekali
+                            pakai.</small></span></button>
+            </div>
+            <button data-p="no">Tidak jadi</button>
+        </div>
+    </div>
+    <div class="ov" id="gacha" hidden>
+        <div style="max-width:420px">
+            <h2>Cermin ungu menatap balik</h2>
+            <p id="gtxt"></p>
+            <div class="flip"><img id="gimg" alt="" onload="this.classList.remove('bad')"
+                    onerror="this.classList.add('bad')"><span id="gfb" class="flipfb"></span></div>
+            <button id="take" hidden>Ambil</button>
+        </div>
+    </div>
+    <div class="ov" id="boxov" hidden>
+        <div style="max-width:420px">
+            <h2>Kotak itu terbuka</h2>
+            <p id="bxp"></p>
+            <div class="flip"><img id="flipimg" alt="" onload="this.classList.remove('bad')"
+                    onerror="this.classList.add('bad')"><span id="flipfb" class="flipfb"></span></div>
+            <button id="bxtake" hidden>Terima nasib</button>
+        </div>
+    </div>
+    <div class="ov" id="end" hidden>
+        <div>
+            <h2 id="eT"></h2>
+            <p id="eP"></p><button id="again"></button>
+        </div>
+    </div>
+
+    <script src="function.js"></script>
+</body>
+
+</html>

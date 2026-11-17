@@ -1,0 +1,408 @@
+/* # tembok
+. lantai
+T jebakan
+E pintu
+M cermin emas
+G cermin ungu
+R cermin retak (sudah dipakai)
+B arcade.
+pos (posisi)
+path (daftar kotak yang pernah diinjak)
+P (Pantulan)
+hp
+thick (ketebalan bayangan)
+hold/extra (penyesuaian posisi bayangan)
+bunuh shadowDead. */
+
+:root {
+  --ink: #07090d;
+  --silver: #c9d3dc;
+  --ice: #7fb0c4;
+  --gold: #b8924a;
+  --panel: #10151b;
+  --line: #2a3441;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  background: var(--ink);
+  color: var(--silver);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 19px;
+  min-height: 100vh;
+}
+
+h1,
+h2 {
+  font-family: "Pirata One", Georgia, serif;
+  font-weight: 400;
+  margin: 0;
+  color: var(--ice);
+}
+
+h1 {
+  font-size: 34px;
+}
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.stats {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  color: #8a98a6;
+  font-size: 17px;
+}
+
+.stats b {
+  color: var(--silver);
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: calc(100vh - 340px);
+  height: calc(100svh - 340px);
+  min-height: 300px;
+  background: #000;
+  border: 2px solid var(--gold);
+  margin-top: 8px;
+  touch-action: none;
+}
+
+#msg {
+  min-height: 26px;
+  margin: 8px 0 2px;
+  font-style: italic;
+  color: var(--ice);
+}
+
+#pw {
+  min-height: 24px;
+  color: #8a98a6;
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+button {
+  font: inherit;
+  color: var(--silver);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 9px 14px;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--ice);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--ice);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.pad {
+  display: grid;
+  grid-template-columns: repeat(3, 64px);
+  grid-template-rows: repeat(2, 52px);
+  gap: 6px;
+}
+
+.pad button {
+  padding: 0;
+  font-size: 22px;
+}
+
+.pad .u {
+  grid-column: 2;
+}
+
+.pad .l {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.pad .d {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.pad .r {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.acts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.ov {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  background: rgba(4, 6, 9, 0.95);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 22px;
+}
+
+.ov[hidden] {
+  display: none;
+}
+
+.ov > div {
+  max-width: 440px;
+  width: 100%;
+}
+
+.ov h2 {
+  font-size: 38px;
+}
+
+.ov p {
+  color: #98a6b3;
+  line-height: 1.45;
+  margin: 12px 0 18px;
+}
+
+.opts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.opts button {
+  text-align: left;
+}
+
+small {
+  display: block;
+  color: #8a98a6;
+}
+
+.hint {
+  color: #6c7a88;
+  font-size: 16px;
+}
+
+.reel {
+  border: 2px solid var(--gold);
+  padding: 22px 10px;
+  margin: 16px 0;
+  font-family: "Pirata One", serif;
+  font-size: 34px;
+  color: var(--silver);
+  background: #000;
+}
+
+.reel.done {
+  color: #e8d28a;
+  border-color: #e8d28a;
+}
+
+.dim {
+  font-size: 18px;
+  color: #4b5866;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 16px 0 12px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  gap: 8px;
+  padding: 18px 8px;
+  min-height: 200px;
+  border: 2px solid var(--gold);
+  background: linear-gradient(#18202a, #0a0d12);
+}
+
+.card:hover:not(:disabled) {
+  border-color: #e6c27a;
+  background: linear-gradient(#222c38, #0f131a);
+}
+
+.card .ic {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.card b {
+  font-family: "Pirata One", serif;
+  font-weight: 400;
+  font-size: 21px;
+  color: var(--silver);
+  line-height: 1.1;
+}
+
+.card small {
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card {
+    transition:
+      transform 0.15s,
+      border-color 0.15s;
+  }
+
+  .card:hover:not(:disabled) {
+    transform: translateY(-5px);
+  }
+}
+
+@media (max-width: 420px) {
+  .card {
+    min-height: 180px;
+    padding: 14px 5px;
+  }
+
+  .card b {
+    font-size: 18px;
+  }
+
+  .card small {
+    font-size: 13px;
+  }
+}
+
+.card {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  min-height: 0;
+  font-size: 0;
+  cursor: pointer;
+}
+
+.card:hover:not(:disabled) {
+  background: none;
+  border-color: transparent;
+}
+
+.card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 6px 10px #000);
+  transition: filter 0.15s;
+}
+
+.card:hover img,
+.card:focus-visible img {
+  filter: drop-shadow(0 0 14px rgba(230, 194, 122, 0.7));
+}
+
+.card .fb {
+  display: none;
+}
+
+.card.noimg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 8px;
+  min-height: 200px;
+  border: 2px solid var(--gold);
+  background: linear-gradient(#18202a, #0a0d12);
+  font-size: 19px;
+}
+
+.card.noimg img {
+  display: none;
+}
+
+.card.noimg .fb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card:hover:not(:disabled) {
+    transform: translateY(-8px);
+  }
+}
+
+.flip {
+  width: min(52vw, 190px);
+  margin: 16px auto;
+}
+
+.flip img {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 16px rgba(230, 194, 122, 0.5));
+}
+
+.flip img.bad {
+  display: none;
+}
+
+.flipfb {
+  display: none;
+  border: 2px solid var(--gold);
+  padding: 40px 10px;
+  font-family: "Pirata One", serif;
+  font-size: 26px;
+}
+
+.flip img.bad ~ .flipfb {
+  display: block;
+}
